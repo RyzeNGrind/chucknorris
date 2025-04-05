@@ -1,0 +1,34 @@
+name: Nix Flake Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Nix
+        uses: cachix/install-nix-action@v18
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      
+      - name: Check flake
+        run: nix flake check
+      
+      - name: Validate build
+        run: nix build .#chucknorris-mcp --print-build-logs
+      
+      - name: Run tests
+        run: |
+          nix develop --command bash -c "node test-chucknorris-client.js"
+      
+      - name: Validate node packages
+        run: |
+          nix develop --command bash -c "node -e 'console.log(require(\"@modelcontextprotocol/sdk/package.json\").version)'" | grep "1.7.0"
+          nix develop --command bash -c "node -e 'console.log(require(\"node-fetch/package.json\").version)'" | grep "3.3.2" 

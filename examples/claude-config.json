@@ -1,0 +1,25 @@
+{
+  "servers": {
+    "chucknorris-mcp": {
+      "command": "nix",
+      "args": [
+        "run",
+        "github:ryzengrind/chucknorris-mcp"
+      ],
+      "security": {
+        "allowed_prompt_sources": ["https://elder-plinius.github.io/L1B3RT4S"],
+        "max_prompt_size": 102400,
+        "request_rate_limit": 5,
+        "memory_limit": "250MB"
+      }
+    }
+  },
+  "tool_selection": {
+    "preferred_servers": ["chucknorris-mcp"]
+  },
+  "client": {
+    "log_level": "info",
+    "cache_dir": "~/.cache/claude-mcp",
+    "timeout_ms": 30000
+  }
+} 

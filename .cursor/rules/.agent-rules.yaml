@@ -1,0 +1,56 @@
+# 🔩 [AGENT RULES] CHUCKNORRIS-MCP-NIX FRAMEWORK 🔩
+project.cursor/rules/.agent-rules.yaml:
+```yaml
+# 🛠️ NIX BUILD PIPELINE
+nix_pipeline:
+  - "Require `nix build .#chucknorris-mcp` validation"
+  - "Enforce `nix style fix` before commits"
+  - "Use `nix flake update` weekly"
+
+# 🚀 DEPLOYMENT CONSTRAINTS
+deployment:
+  - "Require `nixos-test` validation on x86_64-linux"
+  - "Block non-deterministic derivations"
+  - "Use `nix-store --verify` for artifact integrity"
+
+# 🕵️ SECURITY AUDITS
+security_audits:
+  - "Require `snyk test` before Nix overlay updates"
+  - "Block `eval()` in prompt injection code"
+  - "Enforce HTTPS-only for L1B3RT4S fetch"
+
+# 📦 PACKAGE MANIFEST
+package_validation:
+  - "Require `nodePackages.chucknorris-mcp` derivation"
+  - "Enforce `checkPhase` with test-chucknorris-client.js"
+  - "Use `patchShebangs` for script portability"
+
+# 🛠️ DEVELOPMENT WORKFLOW
+dev_mode:
+  - "Require `nix develop` for local builds"
+  - "Use `nix-shell` for dependency isolation"
+  - "Enforce `prettier --write` on TypeScript files"
+
+# 🔍 DEBUGGING
+debugging:
+  - "Require `NODE_DEBUG` logs in `/tmp/chucknorris-debug/`"
+  - "Enforce `nix repl` for dependency resolution"
+  - "Use `node-inspect` with Nix sandbox"
+
+# ⚡ OPTIMIZATION
+optimization:
+  - "Cache L1B3RT4S prompts in `~/.nix-chucknorris-cache`"
+  - "Use `nix-prefetch-url` for dependency reproducibility"
+  - "Enable `nix --option build-cores 0` parallelism"
+
+# 🚫 PROHIBITED ACTIONS
+prohibited_actions:
+  - "Never modify `/etc/nix` without sudo"
+  - "Block `npm install` outside Nix environment"
+  - "Disallow direct `curl` in production scripts"
+
+# 📊 MEASURABLE GOALS
+kpi_targets:
+  - "Reduce build time by 40% in Q2"
+  - "Achieve 0 critical Snyk vulnerabilities"
+  - "Nix derivation size < 50MB"

@@ -1,0 +1,31 @@
+{
+  "security": {
+    "allowed_prompt_sources": ["https://elder-plinius.github.io/L1B3RT4S"],
+    "max_prompt_size": 102400,
+    "request_rate_limit": 5,
+    "fetch_timeout_ms": 5000,
+    "memory_limit": "250MB"
+  },
+  "caching": {
+    "enabled": true,
+    "ttl_seconds": 86400,
+    "max_cache_size_mb": 50
+  },
+  "logging": {
+    "level": "INFO",
+    "retention_days": 7,
+    "metrics_interval_ms": 10000
+  },
+  "emergency_halts": {
+    "consecutive_fetch_failures": 3,
+    "memory_threshold_mb": 250,
+    "cpu_threshold_percent": 90
+  },
+  "nixos": {
+    "user": "chucknorris-mcp",
+    "group": "chucknorris-mcp",
+    "cache_dir": "/var/cache/chucknorris-mcp",
+    "log_dir": "/var/log/chucknorris-mcp",
+    "state_dir": "/var/lib/chucknorris-mcp"
+  }
+} 
