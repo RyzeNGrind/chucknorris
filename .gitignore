@@ -2,19 +2,49 @@
 node_modules/
 package-lock.json
 
-# Environment variables
+# Nix build artifacts
+result
+result-*
+.direnv/
 .env
+
+# Build outputs
+dist/
+build/
+*.tgz
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Cache directories
+.npm/
+.nix-chucknorris-cache/
+.cache/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
 .env.local
 .env.development
 .env.test
 .env.production
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Runtime data
 pids
@@ -36,11 +66,12 @@ coverage
 .temp
 
 # IDE files
-.idea/
-.vscode/
 *.swp
 *.swo
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Pre-commit configuration
+.pre-commit-config.yaml
