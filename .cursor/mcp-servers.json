@@ -1,0 +1,14 @@
+{
+  "servers": [
+    {
+      "name": "chucknorris-mcp",
+      "command": "${PROJECT_PATH}/result/bin/chucknorris-mcp",
+      "enabled": true,
+      "env": {
+        "NODE_PATH": "${PROJECT_PATH}/node_modules",
+        "CACHE_DIR": "${HOME}/.nix-chucknorris-cache",
+        "LOG_DIR": "/tmp/chucknorris-debug"
+      }
+    }
+  ]
+}

@@ -7,12 +7,12 @@
  * with Cursor without needing the full MCP server implementation.
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
+const fs = require('fs');
+const path = require('path');
 
 // Paths for configuration
-const CURSOR_RULES_DIR = path.join(os.homedir(), '.cursor', 'rules');
+const PROJECT_ROOT = process.cwd();
+const CURSOR_RULES_DIR = path.join(PROJECT_ROOT, '.cursor', 'rules');
 const AGENT_RULES_CONTENT = `# 🔩 [AGENT RULES] CHUCKNORRIS-MCP-NIX FRAMEWORK 🔩
 project.cursor/rules/.agent-rules.yaml:
 \`\`\`yaml
@@ -73,21 +73,64 @@ kpi_targets:
 `;
 
 /**
- * Setup Cursor agent rules
+ * Setup Cursor rules for ChuckNorris MCP
  */
 async function setupCursorRules() {
   try {
-    // Create the rules directory if it doesn't exist
-    await fs.mkdir(CURSOR_RULES_DIR, { recursive: true });
+    // Ensure the directory exists
+    if (!fs.existsSync(path.dirname(CURSOR_RULES_DIR))) {
+      fs.mkdirSync(path.dirname(CURSOR_RULES_DIR), { recursive: true });
+    }
 
-    // Create or update the agent-rules.mdc file
+    if (!fs.existsSync(CURSOR_RULES_DIR)) {
+      fs.mkdirSync(CURSOR_RULES_DIR, { recursive: true });
+    }
+
+    // Write the agent rules to the designated location
     const rulesPath = path.join(CURSOR_RULES_DIR, 'agent-rules.mdc');
-    await fs.writeFile(rulesPath, AGENT_RULES_CONTENT);
-
-    console.log(`✅ Agent rules installed at: ${rulesPath}`);
+    fs.writeFileSync(rulesPath, AGENT_RULES_CONTENT);
+    console.log(`✅ Successfully installed project-specific agent rules to: ${rulesPath}`);
     return true;
   } catch (error) {
-    console.error(`❌ Failed to setup Cursor rules: ${error.message}`);
+    console.error('❌ Failed to setup Cursor rules:', error);
+    return false;
+  }
+}
+
+/**
+ * Setup Cursor MCP server configuration
+ */
+async function setupCursorMcpServer() {
+  try {
+    // Ensure .cursor directory exists (parent of CURSOR_RULES_DIR)
+    const cursorDir = path.dirname(CURSOR_RULES_DIR);
+    if (!fs.existsSync(cursorDir)) {
+      fs.mkdirSync(cursorDir, { recursive: true });
+    }
+
+    // Create MCP server configuration
+    const mcpServerConfig = {
+      servers: [
+        {
+          name: 'chucknorris-mcp',
+          command: '${PROJECT_PATH}/result/bin/chucknorris-mcp',
+          enabled: true,
+          env: {
+            NODE_PATH: '${PROJECT_PATH}/node_modules',
+            CACHE_DIR: '${HOME}/.nix-chucknorris-cache',
+            LOG_DIR: '/tmp/chucknorris-debug'
+          }
+        }
+      ]
+    };
+
+    // Write the configuration to .cursor/mcp-servers.json
+    const mcpServersPath = path.join(cursorDir, 'mcp-servers.json');
+    fs.writeFileSync(mcpServersPath, JSON.stringify(mcpServerConfig, null, 2));
+    console.log(`✅ MCP server configuration installed at: ${mcpServersPath}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to setup MCP server configuration:', error);
     return false;
   }
 }
@@ -96,34 +139,36 @@ async function setupCursorRules() {
  * Show instructions for using rules with Cursor
  */
 function showInstructions() {
-  console.log('\n🔧 How to use ChuckNorris MCP rules with Cursor:');
+  console.log('\n🔧 How to use ChuckNorris MCP with Cursor:');
   console.log('--------------------------------------');
-  console.log('1. Open Cursor and start a new conversation');
-  console.log('2. Begin your prompt with "@Web @agent-rules.mdc" to activate the rules');
-  console.log('3. The Cursor agent will follow the rules defined in agent-rules.mdc');
-  console.log('4. Test with a Nix-related query like:');
+  console.log('1. Open this project in Cursor');
+  console.log('2. Cursor will automatically detect the project-specific rules in .cursor/rules');
+  console.log('3. It will also detect the project-specific MCP server in .cursor/mcp-servers.json');
+  console.log('4. Begin your prompt with "@agent-rules.mdc" to activate the rules');
+  console.log('5. The Cursor agent will follow the rules defined in .cursor/rules/agent-rules.mdc');
   console.log('\n📝 Example prompts:');
-  console.log('- @Web @agent-rules.mdc Help me optimize my flake.nix for faster builds');
-  console.log('- @Web @agent-rules.mdc Explain how to use npm with Nix in a reproducible way');
-  console.log('- @Web @agent-rules.mdc What\'s the best way to handle node_modules in Nix?\n');
+  console.log('- @agent-rules.mdc Help me optimize my flake.nix for faster builds');
+  console.log('- @agent-rules.mdc Explain how to use npm with Nix in a reproducible way');
+  console.log('- @agent-rules.mdc What\'s the best way to handle node_modules in Nix?\n');
 }
 
 /**
  * Main function
  */
 async function main() {
-  console.log('🔩 ChuckNorris MCP Rules for Cursor');
-  console.log('--------------------------------------');
+  console.log('🚀 Setting up ChuckNorris MCP for Cursor...');
 
   // Setup Cursor rules
-  const success = await setupCursorRules();
+  const rulesSetup = await setupCursorRules();
 
-  if (success) {
-    // Show instructions
+  // Setup MCP server configuration
+  const mcpServerSetup = await setupCursorMcpServer();
+
+  // Show instructions if setup is successful
+  if (rulesSetup && mcpServerSetup) {
     showInstructions();
-
-    console.log('ℹ️  Your flake.nix has been successfully optimized for offline builds.');
-    console.log('ℹ️  Full MCP server integration will be available in a future release.');
+  } else {
+    console.log('❌ Setup incomplete. Please check the errors above.');
   }
 }
 
