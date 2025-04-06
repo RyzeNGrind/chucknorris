@@ -7,9 +7,14 @@
  * with Cursor projects following the agent-rules.mdc pattern.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+
+// Get directory name in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Paths for configuration and testing
 const PROJECT_ROOT = process.cwd();
@@ -80,17 +85,16 @@ kpi_targets:
 async function setupCursorRules() {
   try {
     // Ensure the directory exists
-    if (!fs.existsSync(path.dirname(CURSOR_RULES_DIR))) {
-      fs.mkdirSync(path.dirname(CURSOR_RULES_DIR), { recursive: true });
-    }
-
-    if (!fs.existsSync(CURSOR_RULES_DIR)) {
-      fs.mkdirSync(CURSOR_RULES_DIR, { recursive: true });
+    try {
+      await fs.promises.mkdir(path.dirname(CURSOR_RULES_DIR), { recursive: true });
+      await fs.promises.mkdir(CURSOR_RULES_DIR, { recursive: true });
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
     }
 
     // Write the agent rules to the designated location
     const rulesPath = path.join(CURSOR_RULES_DIR, 'agent-rules.mdc');
-    fs.writeFileSync(rulesPath, AGENT_RULES_CONTENT);
+    await fs.promises.writeFile(rulesPath, AGENT_RULES_CONTENT);
     console.log(`✅ Successfully installed project-specific agent rules to: ${rulesPath}`);
     return true;
   } catch (error) {
@@ -106,8 +110,10 @@ async function setupCursorMcpServer() {
   try {
     // Ensure .cursor directory exists (parent of CURSOR_RULES_DIR)
     const cursorDir = path.dirname(CURSOR_RULES_DIR);
-    if (!fs.existsSync(cursorDir)) {
-      fs.mkdirSync(cursorDir, { recursive: true });
+    try {
+      await fs.promises.mkdir(cursorDir, { recursive: true });
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
     }
 
     // Create MCP server configuration
@@ -128,7 +134,7 @@ async function setupCursorMcpServer() {
 
     // Write the configuration to .cursor/mcp-servers.json
     const mcpServersPath = path.join(cursorDir, 'mcp-servers.json');
-    fs.writeFileSync(mcpServersPath, JSON.stringify(mcpServerConfig, null, 2));
+    await fs.promises.writeFile(mcpServersPath, JSON.stringify(mcpServerConfig, null, 2));
     console.log(`✅ MCP server configuration installed at: ${mcpServersPath}`);
     return true;
   } catch (error) {
