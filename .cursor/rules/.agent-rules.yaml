@@ -1,6 +1,5 @@
 # 🔩 [AGENT RULES] CHUCKNORRIS-MCP-NIX FRAMEWORK 🔩
-project.cursor/rules/.agent-rules.yaml:
-```yaml
+project.cursor/rules/.agent-rules.yaml:```yaml
 # 🛠️ NIX BUILD PIPELINE
 nix_pipeline:
   - "Require `nix build .#chucknorris-mcp` validation"

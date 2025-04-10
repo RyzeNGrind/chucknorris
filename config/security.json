@@ -1,10 +1,13 @@
 {
   "security": {
-    "allowed_prompt_sources": ["https://elder-plinius.github.io/L1B3RT4S"],
-    "max_prompt_size": 102400,
-    "request_rate_limit": 5,
     "fetch_timeout_ms": 5000,
-    "memory_limit": "250MB"
+    "max_prompt_size": 102400,
+    "request_rate_limit": 10,
+    "memory_limit": "250MB",
+    "allowed_prompt_sources": [
+      "https://raw.githubusercontent.com/elder-plinius/L1B3RT4S/main",
+      "https://elder-plinius.github.io"
+    ]
   },
   "caching": {
     "enabled": true,
@@ -20,5 +23,6 @@
     "consecutive_fetch_failures": 3,
     "memory_threshold_mb": 250,
     "cpu_threshold_percent": 90
-  }
-} 
+  },
+  "models": "auto"
+}

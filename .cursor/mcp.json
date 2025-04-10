@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "ultra-mcp": {
+      "command": "node",
+      "args": [
+        "./ultra-basic-mcp.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "SERVER_ID": "ultra-instance"
+      }
+    }
+  }
+}
